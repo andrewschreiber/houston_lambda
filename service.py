@@ -98,7 +98,11 @@ def process_tasks(todays, yesterdays):
 
     # sendmail function takes 3 arguments: sender's address, recipient's address
     # and message to send - here it is sent as one string.
-    server.send_message(msg)
+    # message = html.as_string()
+    server.sendmail("houston.task@gmail.com", "andrew.schreiber1@gmail.com", msg.as_string())
+
+    # server.sendmail(msg.as_string(), "andrew.schreiber1@gmail.com", "houston.task@gmail.com")
+    server.quit()
     print("Sent message!")
 
 def tag_sort(taskseries_list):
@@ -129,4 +133,3 @@ def handler(event, context):
     print("Got handler")
     retrieve_tasks()
     return
-    
