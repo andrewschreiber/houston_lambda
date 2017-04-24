@@ -78,8 +78,8 @@ def process_tasks(todays, yesterdays):
     
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Andrew's Tasks [{0}]".format(time.strftime("%a, %b %d"))
-    msg['From'] = "houston.task@gmail.com"
-    msg['To'] ="andrew.schreiber1@gmail.com" #, "ericktodd@gmail.com"]
+    # msg['From'] = "houston.task@gmail.com"
+    # msg['To'] ="andrew.schreiber1@gmail.com" #, "ericktodd@gmail.com"]
     # msg['CC'] = "andrew.schreiber1@gmail.com"
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('templates')
@@ -96,14 +96,11 @@ def process_tasks(todays, yesterdays):
     server.starttls()
     server.login("houston.task@gmail.com", "houstonpassword")
 
-    # sendmail function takes 3 arguments: sender's address, recipient's address
-    # and message to send - here it is sent as one string.
-    # message = html.as_string()
     server.sendmail("houston.task@gmail.com", "andrew.schreiber1@gmail.com", msg.as_string())
+    server.sendmail("houston.task@gmail.com", "ericktodd@gmail.com", msg.as_string())
 
-    # server.sendmail(msg.as_string(), "andrew.schreiber1@gmail.com", "houston.task@gmail.com")
     server.quit()
-    print("Sent message!")
+    print("Sent messages!")
 
 def tag_sort(taskseries_list):
     for x in taskseries_list:
