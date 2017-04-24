@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Main function
 """
@@ -5,26 +7,34 @@ Main function
 
 import time
 import os
-import sys
 import smtplib
-
 import jinja2
+import yaml
 
 from rtmapi import Rtm
 from mailer import Mailer
 from mailer import Message
 from operator import attrgetter
 
-import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+
 def retrieve_tasks():
     print("Running job")
-    api_key = os.environ['RTM_API_KEY']
-    shared_secret = os.environ['RTM_SHARED_SECRET']
-    token = os.environ['RTM_TOKEN']
-    # token = sys.argv[3] if len(sys.argv) >= 4 else None
+    with open("config.yaml", 'r') as stream:
+        cfg = yaml.load(stream)
+
+    # path_to_config_file = os.path.join(os.getcwd(), 'config.yaml')
+    # cfg = read(path_to_config_file, loader=yaml.load)
+
+    api_key = cfg.get('rtm_api_key')
+    shared_secret = cfg.get('rtm_shared_secret')
+    token = cfg.get('rtm_token')
+
+    # api_key = os.environ['RTM_API_KEY']
+    # shared_secret = os.environ['RTM_SHARED_SECRET']
+    # token = os.environ['RTM_TOKEN']
     api = Rtm(api_key, shared_secret, "delete", token)
     
     # authenication block, see http://www.rememberthemilk.com/services/api/authentication.rtm
@@ -72,7 +82,7 @@ def process_tasks(todays, yesterdays):
     msg['To'] ="andrew.schreiber1@gmail.com" #, "ericktodd@gmail.com"]
     # msg['CC'] = "andrew.schreiber1@gmail.com"
     env = jinja2.Environment(
-        loader=jinja2.PackageLoader('houston','templates')
+        loader=jinja2.FileSystemLoader('templates')
     )
     template = env.get_template('email.html')
     html = template.render(todays=sorted_todays, yesterdays=sorted_yesterdays)
@@ -84,7 +94,7 @@ def process_tasks(todays, yesterdays):
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo()
     server.starttls()
-    server.login("houston.task@gmail.com","houstonpassword")
+    server.login("houston.task@gmail.com", "houstonpassword")
 
     # sendmail function takes 3 arguments: sender's address, recipient's address
     # and message to send - here it is sent as one string.
@@ -114,3 +124,9 @@ def tag_sort(taskseries_list):
             x.color_hex = "201c1c"
     
     return sorted(taskseries_list, key=attrgetter('tag'))
+
+def handler(event, context):
+    print("Got handler")
+    retrieve_tasks()
+    return
+    

@@ -1,0 +1,19 @@
+region: us-east-1
+
+function_name: my_lambda_function
+handler: service.handler
+# role: lambda_basic_execution
+description: My first lambda function
+
+# if access key and secret are left blank, boto will use the credentials
+# defined in the [default] section of ~/.aws/credentials.
+aws_access_key_id:
+aws_secret_access_key:
+
+rtm_api_key: c96d28b421fea187990fe63ba33bbe19
+rtm_shared_secret: 0aeeab6cb2442156
+rtm_token: a599020f1a6a15a9885971615c5300cf63af458b
+
+# dist_directory: dist
+# timeout: 15
+# memory_size: 512
