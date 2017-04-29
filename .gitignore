@@ -93,3 +93,4 @@ ENV/
 
 #project config
 config.yaml
+event.json

@@ -9,7 +9,7 @@ import time
 import os
 import smtplib
 import jinja2
-import yaml
+import json
 
 from rtmapi import Rtm
 from mailer import Mailer
@@ -22,19 +22,15 @@ from email.mime.text import MIMEText
 
 def retrieve_tasks():
     print("Running job")
-    with open("config.yaml", 'r') as stream:
-        cfg = yaml.load(stream)
+    # with open("config.yaml", 'r') as stream:
+    #     cfg = yaml.load(stream)
+    with open('event.json') as data_file:
+        cfg = json.load(data_file)
 
-    # path_to_config_file = os.path.join(os.getcwd(), 'config.yaml')
-    # cfg = read(path_to_config_file, loader=yaml.load)
+    api_key = cfg['rtm_api_key']
+    shared_secret = cfg['rtm_shared_secret']
+    token = cfg['rtm_token']
 
-    api_key = cfg.get('rtm_api_key')
-    shared_secret = cfg.get('rtm_shared_secret')
-    token = cfg.get('rtm_token')
-
-    # api_key = os.environ['RTM_API_KEY']
-    # shared_secret = os.environ['RTM_SHARED_SECRET']
-    # token = os.environ['RTM_TOKEN']
     api = Rtm(api_key, shared_secret, "delete", token)
     
     # authenication block, see http://www.rememberthemilk.com/services/api/authentication.rtm
@@ -130,3 +126,5 @@ def handler(event, context):
     print("Got handler")
     retrieve_tasks()
     return
+
+# retrieve_tasks()
