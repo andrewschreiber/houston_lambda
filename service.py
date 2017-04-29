@@ -78,7 +78,7 @@ def process_tasks(todays, yesterdays):
     # msg['To'] ="andrew.schreiber1@gmail.com" #, "ericktodd@gmail.com"]
     # msg['CC'] = "andrew.schreiber1@gmail.com"
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader('templates')
+        loader=jinja2.FileSystemLoader('')
     )
     template = env.get_template('email.html')
     html = template.render(todays=sorted_todays, yesterdays=sorted_yesterdays)
