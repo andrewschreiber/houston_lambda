@@ -32,14 +32,15 @@ def retrieve_tasks():
     token = cfg['rtm_token']
 
     api = Rtm(api_key, shared_secret, "delete", token)
-    
+
     # authenication block, see http://www.rememberthemilk.com/services/api/authentication.rtm
     # check for valid token
     if not api.token_valid():
         print("got an invalid token", api)
         return
-    
-    # get all open tasks, see http://www.rememberthemilk.com/services/api/methods/rtm.tasks.getList.rtm
+
+    # get all open tasks, see
+    # http://www.rememberthemilk.com/services/api/methods/rtm.tasks.getList.rtm
 
     yesterdays_list = api.rtm.tasks.getList(filter="completed:yesterday")
     yesterdays = []
@@ -64,19 +65,16 @@ def retrieve_tasks():
                 todays.append(taskseries)
 
     process_tasks(todays, yesterdays)
-    
+
 
 def process_tasks(todays, yesterdays):
     print("Todays: ", todays)
     print("Yesterdays: ", yesterdays)
     sorted_todays = tag_sort(todays)
     sorted_yesterdays = tag_sort(yesterdays)
-    
+
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Andrew's Tasks [{0}]".format(time.strftime("%a, %b %d"))
-    # msg['From'] = "houston.task@gmail.com"
-    # msg['To'] ="andrew.schreiber1@gmail.com" #, "ericktodd@gmail.com"]
-    # msg['CC'] = "andrew.schreiber1@gmail.com"
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader('')
     )
@@ -92,15 +90,18 @@ def process_tasks(todays, yesterdays):
     server.starttls()
     server.login("houston.task@gmail.com", "houstonpassword")
 
-    server.sendmail("houston.task@gmail.com", "andrew.schreiber1@gmail.com", msg.as_string())
-    server.sendmail("houston.task@gmail.com", "ericktodd@gmail.com", msg.as_string())
+    server.sendmail("houston.task@gmail.com",
+                    "andrew.schreiber1@gmail.com", msg.as_string())
+    server.sendmail("houston.task@gmail.com",
+                    "ericktodd@gmail.com", msg.as_string())
 
     server.quit()
     print("Sent messages!")
 
+
 def tag_sort(taskseries_list):
     for x in taskseries_list:
-        for tag in x.tags: # use iterator for RTM object
+        for tag in x.tags:  # use iterator for RTM object
             x.tag = tag.value
 
         if x.tag == 'thought':
@@ -119,8 +120,8 @@ def tag_sort(taskseries_list):
         if x.tag is None:
             x.tag = "general"
             x.color_hex = "201c1c"
-    
     return sorted(taskseries_list, key=attrgetter('tag'))
+
 
 def handler(event, context):
     print("Got handler")
