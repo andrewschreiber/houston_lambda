@@ -56,7 +56,7 @@ def retrieve_tasks():
             print(taskseries.task.due, taskseries.name)
             yesterdays.append(taskseries)
 
-    todays_list = api.rtm.tasks.getList(filter="due:today")
+    todays_list = api.rtm.tasks.getList(filter="dueBefore:tomorrow")
     todays = []
     for tasklist in todays_list.tasks:
         for taskseries in tasklist:
@@ -84,20 +84,28 @@ def process_tasks(todays, yesterdays):
     part = MIMEText(html, 'html')
     msg.attach(part)
 
+    send_message(msg)
     # Send the message via local SMTP server.
+
+def send_message(msg):
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo()
     server.starttls()
-    server.login("***REMOVED***", "***REMOVED***")
 
-    server.sendmail("***REMOVED***",
-                    "***REMOVED***", msg.as_string())
-    server.sendmail("***REMOVED***",
-                    "***REMOVED***", msg.as_string())
+    with open('event.json') as data_file:
+        cfg = json.load(data_file)
+
+    houston_mail = cfg['houston_mail']
+    houston_password = cfg['houston_password']
+    target_emails = cfg['target_emails']
+
+    server.login(houston_mail, houston_password)
+
+    for email in target_emails:
+        server.sendmail(houston_mail, email, msg.as_string())
 
     server.quit()
     print("Sent messages!")
-
 
 def tag_sort(taskseries_list):
     for x in taskseries_list:
