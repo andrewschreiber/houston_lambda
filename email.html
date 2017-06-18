@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-    <h3>&nbsp;&nbsp;<span style="text-decoration: underline;">Today</span></h3>
-    {% for item in todays %}
-        <p><span style="color: #{{ item.color_hex }};">[{{ item.tag }}] {{ item.name }}</span</p>
-    {% endfor %}
-    <br>
     <h3>&nbsp;&nbsp;<span style="text-decoration: underline;">Done Yesterday</span></h3>
     {% for item in yesterdays %}
         <p><del><span style="color: #{{ item.color_hex }};">[{{ item.tag }}] {{ item.name }}</span</del></p>
     {% endfor %}
     {# a comment #}
+    <h3>&nbsp;&nbsp;<span style="text-decoration: underline;">Today</span></h3>
+    {% for item in todays %}
+        <p><span style="color: #{{ item.color_hex }};">[{{ item.tag }}] {{ item.name }}</span</p>
+    {% endfor %}
+    <br>
 </body>
 </html>
